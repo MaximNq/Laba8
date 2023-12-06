@@ -1,0 +1,103 @@
+using OpenQA.Selenium;
+using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Support.UI;
+using Test7Test.Pages;
+using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Support.UI;
+using Test7Test.Pages;
+using System;
+
+namespace Test7Test.Pages
+{
+    public class AutomationPage
+    {
+        private readonly IWebDriver driver;
+
+        public AutomationPage(IWebDriver driver)
+        {
+            this.driver = driver;
+        }
+
+        public void GoToPage()
+        {
+            driver.Navigate().GoToUrl("https://ultimateqa.com/automation");
+            driver.Manage().Window.Maximize();
+        }
+
+        public void ClickSignInLink()
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("(//a[@href='http://courses.ultimateqa.com/users/sign_in'])[1]"))).Click();
+        }
+
+        public void ClickSignUpLink()
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("(//a[@href='/users/sign_up'])[1]"))).Click();
+        }
+
+        public void FillSignUpForm(string email, string firstName, string lastName, string password)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            IWebElement emailElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("(//input[@id = 'user[email]'])[1]")));
+            emailElement.SendKeys(email);
+
+            IWebElement firstNameElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("(//input[@id = 'user[first_name]'])[1]")));
+            firstNameElement.SendKeys(firstName);
+
+            IWebElement lastNameElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("(//input[@id = 'user[last_name]'])[1]")));
+            lastNameElement.SendKeys(lastName);
+
+            IWebElement passwordElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("(//input[@id = 'user[password]'])[1]")));
+            passwordElement.SendKeys(password);
+
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("(//input[@id = 'user[terms]'])[1]"))).Click();
+        }
+
+        public void ClickSubmitButton()
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("(//button[@class = 'button button-primary g-recaptcha'])[1]"))).Click();
+        }
+    }
+}
+
+
+namespace Test7Test
+{
+    public class Tests
+    {
+        private IWebDriver driver;
+        private AutomationPage automationPage;
+
+        [SetUp]
+        public void Setup()
+        {
+            driver = new EdgeDriver();
+            automationPage = new AutomationPage(driver);
+            automationPage.GoToPage();
+        }
+
+        [Test]
+        public void TestSignUp()
+        {
+            driver.Manage().Window.Size = new System.Drawing.Size(1900, 2000);
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            automationPage.ClickSignInLink();
+            automationPage.ClickSignUpLink();
+            automationPage.FillSignUpForm("typgfdgfu@gmail.com", "typu9gmail7com", "typu9gmail7com", "typu9gmail7com");
+            automationPage.ClickSubmitButton();
+
+            // Додайте перевірки та підтвердження результатів тут
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            driver.Quit();
+        }
+    }
+}
